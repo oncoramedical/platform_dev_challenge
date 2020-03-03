@@ -1,0 +1,23 @@
+{
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true,
+        },
+        "editor.rulers": [
+            100
+        ]
+    },
+    "python.formatting.blackArgs": [
+        "-S",
+        "-l",
+        "99"
+    ],
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.pythonPath": ".venv/bin/python",
+    "python.testing.pytestEnabled": true
+}
