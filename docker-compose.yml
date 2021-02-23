@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  api:
+    image: python:3.8-slim
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    depends_on:
+      - mongodb
+    volumes:
+      - ./api/:/app/api
+    ports:
+      - '5000:5000'
+      - '9999:9999'
+    environment:
+      DEBUGGER: 'true'
+      FLASK_APP: app.py
+      FLASK_ENV: development
+      DEBUG_PORT: '9999'
+      MONGODB_URL: 'mongodb://mongodb:27017/test_database'
+    command: 'flask run --host 0.0.0.0'
+
+  mongodb:
+    image: mongo:4.4
+    ports:
+      - '27017:27017'

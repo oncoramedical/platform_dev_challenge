@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "44e06fd1-8d7b-49d3-8b4b-03809b1e5619",
+		"name": "Platform Dev Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/status",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Prescription",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/prescription/123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"prescription",
+						"123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Prescription",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"targetObjectives\": [\n        {\n            \"dose\": 60.0,\n            \"fraction_set\": \"Initial\",\n            \"fractions\": 30,\n            \"targets\": [\n                \"lung_right\"\n            ],\n            \"technique\": \"IMRT\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/prescription/123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"prescription",
+						"123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Risk Prediction",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/prediction/123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"prediction",
+						"123"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

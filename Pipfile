@@ -11,14 +11,13 @@ mypy = "*"
 
 [packages]
 flask = "*"
-jsonschema = "*"
 bson = "*"
 pymongo = "*"
 flask-restful = "*"
-requests = "*"
+debugpy = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
 
 [pipenv]
 allow_prereleases = true

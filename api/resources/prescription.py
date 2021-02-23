@@ -1,15 +1,15 @@
 import logging
 import os
+from datetime import datetime
 
-from flask import Flask, abort, jsonify, request
-from flask_restful import Api, Resource
+from flask import jsonify, request
+from flask_restful import Resource
 from pymongo import DESCENDING, MongoClient
-
-from devchallenge import mongo_helpers, schemas
+from pymongo.errors import PyMongoError
 
 logger = logging.getLogger(__name__)
 
-mongo_url = os.getenv('MONGODB_URL', 'mongodb://localhost:27017/test_db')
+mongo_url = os.getenv("MONGODB_URL")
 
 
 class Prescription(Resource):
@@ -45,27 +45,18 @@ class Prescription(Resource):
         client = MongoClient(mongo_url)
         db = client.get_database()
 
-        prescription_cursor = mongo_helpers.retreive_doc(
-            db.prescription,
-            {"case_id": case_id},
-            find_one=False,
-            sort_params=("timestamp", DESCENDING),
+        # Get most recent prescription object
+        prescription = db.prescriptions.find_one(
+            {"case_id": case_id}, sort=[("timestamp", DESCENDING)]
         )
-        prescriptions = list(prescription_cursor)
-        if len(prescriptions) == 0:
-            logger.warning("no prescriptions found for case")
-            abort(404, "No prescription found")
 
-        most_recent_prescription = prescriptions[0]
-        logger.info("prescription found")
-
-        return jsonify(most_recent_prescription)
+        return jsonify(prescription)
 
     def post(self, case_id):
         """
         Submit a prescription for predictions
 
-        Inserts raw JSON object and returns full prescription object
+        Saves the given prescription with a timestamp and returns the resulting ID and a full prediction object
         ---
         tags:
           - prescription
@@ -90,7 +81,7 @@ class Prescription(Resource):
                     properties:
                         prescription_id:
                             type: string
-                        predictions:
+                        risk_prediction:
                             $ref: '#/definitions/RiskPrediction'
             400:
                 description: Bad Request - invalid request params
@@ -102,33 +93,25 @@ class Prescription(Resource):
                 description: Service Unavailable - connection to the database failed
         """
         case_id = int(case_id)
-        args = request.get_json()
+        prescription_doc = request.get_json()
 
-        client = MongoClient(mongo_url)
-        db = client.get_database()
-
-        logger.info("request received", extra={"request_data": args})
-
-        prescription_doc = args.get(schemas.PRESCRIPTION_FIELD)
-
-        # save prescription doc
-        prescription_doc = mongo_helpers.add_user_metadata(
-            prescription_doc, request.headers.get("Username")
-        )
+        prescription_doc["timestamp"] = datetime.now()
         prescription_doc["case_id"] = case_id
 
         client = MongoClient(mongo_url)
         db = client.get_database()
 
-        prescription_docid, success = mongo_helpers.persist_doc(db.prescription, prescription_doc)
+        try:
+            result = db.prescriptions.insert_one(prescription_doc)
 
-        prescription_doc["_id"] = prescription_docid
-        logger.info('prescription saved', extra={"doc_id": prescription_docid})
-
-        return {"prescription_id": prescription_docid}
-
-
-app = Flask('platform_dev_challenge')
-api = Api(app)
-
-api.add_resource(Prescription, '/prescription/<case_id>')
+            if result.acknowledged:
+                prescription_id = result.inserted_id
+                logger.info(
+                    "Prescription successfully saved",
+                    extra={"case_id": case_id, "prescription_id": prescription_id},
+                )
+                return jsonify({"prescription_id": prescription_id})
+            else:
+                logger.error("Prescription failed to save for unknown reason")
+        except PyMongoError:
+            logger.exception("Prescription failed to save")

@@ -9,7 +9,6 @@
         ]
     },
     "python.formatting.blackArgs": [
-        "-S",
         "-l",
         "99"
     ],
