@@ -22,7 +22,7 @@ All data is stored in MongoDB. Case documents are stored in the `case` collectio
 
 # Setup
 
-1. [Install pipenv](https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv) if it isn't already installed.
+1. [Install pipenv](https://pipenv.pypa.io/en/latest/installation.html) if it isn't already installed.
 2. Clone this repo
 3. Create virtual environment and install dependencies: `PIPENV_VENV_IN_PROJECT=1 pipenv install -d`
    - Pipenv will create a virtual environment in the project directory, so when
