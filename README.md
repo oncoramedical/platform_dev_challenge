@@ -25,7 +25,7 @@ All data is stored in MongoDB. Case documents are stored in the `case` collectio
 1. [Install pipenv](https://pipenv.pypa.io/en/latest/installation.html) if it isn't already installed.
 2. Clone this repo
 3. Create virtual environment and install dependencies: `PIPENV_VENV_IN_PROJECT=1 pipenv install -d`
-   - Pipenv will create a virtual environment in the project directory, so when
+   - Pipenv will create a virtual environment in the project directory, so when you activate the virtual environment using pipenv shell, all the dependencies for the project are readily available in an isolated environment.
 4. Start the API: `docker-compose up -d`
    - This will run a REST API listening on port 5000 and a MongoDB instance listening on port 27017.
 5. Add some initial seed data to the database: `docker-compose exec api python -m seed_data`
